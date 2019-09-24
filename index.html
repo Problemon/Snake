@@ -4,22 +4,26 @@
 
 <head>
 	<meta charset="utf-8">
+	<link href="https://fonts.googleapis.com/css?family=Modak|Poppins&display=swap" rel="stylesheet">
+
 	<link rel="stylesheet" href="css/normalize.css">
 	<link rel="stylesheet" href="css/style.css">
-	<link href="https://fonts.googleapis.com/css?family=Modak&display=swap" rel="stylesheet">
 	<title>Snake</title>
 </head>
 
 <body>
 	<div class="game">
-		<ul class="menu">
-			<li><button class="resume-game default-button-1">resume game</button></li>
-			<li><button class="new-game default-button-1">new game</button></li>
-			<li><button class="skins default-button-1">choose skin</button></li>
-	  </ul>
-		<canvas class="canvas" width="800" height="800"></canvas>
+		<div class="menu">
+		  <ul class="menu-buttons">
+			  <li><button class="resume-game default-button-1"><span>resume game</span></button></li>
+			  <li><button class="new-game default-button-1"><span>new game</span></button></li>
+			  <li><button class="skins default-button-1"><span>choose skin</span></button></li>
+	    </ul>
+	    <div class="show-skins"></div>
+	  </div>
+		<canvas class="gameplay" width="800" height="800"></canvas>
 		<div class="restart-game">
-			<button class="restart default-button-1">Restart</button>
+			<button class="restart default-button-1"><span>restart</span></button>
 		</div>
 	</div>
 	<script src="js/Snake.js"></script>
