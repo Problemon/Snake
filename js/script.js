@@ -1,219 +1,218 @@
-"use strict"
+"use strict";
 
-let cvs = document.querySelector(".canvas"),
-    ctx = cvs.getContext("2d"),
-    width = cvs.width,
-    height = cvs.height;
+let gameplay      = document.querySelector(".gameplay"),
+    gameplayCtx   = gameplay.getContext("2d");
 
-let blockSize = width / 40,
-    widthInBlocks = width / blockSize,
-    heightInBlocks = height / blockSize;
+let boxRestartGame = document.querySelector(".restart-game");
+let customization = document.querySelector(".customization");
+let partsOfSnake = document.querySelectorAll(".segment");
+let partsOfSnakeAnimation = document.querySelectorAll(".segment-animation");
+let arrow = document.querySelector(".arrow");
+let RGBForm = document.querySelectorAll(".colors-rgb");
+let intervalIdAnimation;
 
+let size, blockSize, widthInBlocks, heightInBlocks;
 let score = 0;
-let animationTime = 100;
-let GameOver = false;
+let speed = 100;
+let pause = false;
+let endGame = false;
 
-////BLOCK////
-function Block (col, row) {
-  this.col = col;
-  this.row = row;
-};
 
-Block.prototype.drawSquare = function (color) {
-  let x = this.col * blockSize,
-      y = this.row * blockSize;
+function drawingObjects () {
+  drawScore();
+  drawBackground(gameplayCtx, blockSize, widthInBlocks, heightInBlocks, size);
 
-  ctx.fillStyle = color;
-  ctx.fillRect(x, y, blockSize, blockSize);
-};
-
-Block.prototype.drawCircle = function (color) {
-  let centerX = this.col * blockSize + blockSize / 2,
-      centerY = this.row * blockSize + blockSize / 2;
-
-  ctx.fillStyle = color;
-  circle(centerX, centerY, blockSize / 2, true)
-};
-
-Block.prototype.equal = function (otherBlock) {
-  return this.col === otherBlock.col && this.row === otherBlock.row;
-};
-////Block////
-
-////SNAKE////
-function Snake () {
-  this.segments = [
-    new Block(7, 5),
-    new Block(6, 5),
-    new Block(5, 5)
-  ];
-
-  this.direction = "right";
-  this.nextDirection = "right";
-};
-
-Snake.prototype.draw = function () {
-  this.segments[0].drawSquare("#3ec162") //head
-
-  for (let i = 1; i < this.segments.length; i++) {
-    if (i % 2 == 0) {
-      this.segments[i].drawSquare("#D3E817")
-    } else {
-      this.segments[i].drawSquare("#2C17E8")
-    }
-  }
-};
-
-Snake.prototype.move = function () {
-  let head = this.segments[0];
-  let newHead;
-
-  this.direction = this.nextDirection;
-
-  if (this.direction === "right") {
-    newHead = new Block(head.col + 1, head.row);
-  } else if (this.direction === "down") {
-    newHead = new Block(head.col, head.row + 1);
-  } else if (this.direction === "left") {
-    newHead = new Block(head.col - 1, head.row);
-  } else if (this.direction === "up") {
-    newHead = new Block(head.col, head.row - 1);
-  }
-
-  if (this.checkCollision(newHead)) {
-    gameOver();
-    return;
-  }
-
-  this.segments.unshift(newHead);
-
-  if (newHead.equal(apple.position)) {
-    score++;
-    animationTime--;
-    
-
-    apple.move();
-  } else {
-    this.segments.pop();
-  }
-};
-
-Snake.prototype.checkCollision = function (head) {
-  let leftCollision = (head.col === 0),
-      topCollision = (head.row === 0),
-      rightCollision = (head.col === widthInBlocks - 1),
-      bottomCollision = (head.row === heightInBlocks - 1);
-
-  let wallCollision = leftCollision || topCollision || rightCollision || bottomCollision;
-
-  let selfCollision = false;
-
-  for (let i = 0; i < this.segments.length; i++) {
-    if (head.equal(this.segments[i])) {
-      selfCollision = true;
-    }
-  }
-
-  return wallCollision || selfCollision;
-};
-
-Snake.prototype.setDirection = function (newDirection) {
-
-  if (this.direction === "up" && newDirection === "down") {
-    return
-  } else if (this.direction === "down" && newDirection === "up") {
-    return;
-  } else if (this.direction === "left" && newDirection === "right") {
-    return
-  } else if (this.direction === "right" && newDirection === "left") {
-    return;
-  }
-  
-  this.nextDirection = newDirection;
-};
-////SNAKE////
-
-////APPLE////
-function Apple () {
-  this.position = new Block(10, 10);
-};
-
-Apple.prototype.draw = function () {
-  this.position.drawCircle("#df5620")
-};
-
-Apple.prototype.move = function () {
-  let inSnake = true;
-  while (inSnake) {
-    let randomCol = Math.floor(Math.random() * (widthInBlocks - 2)) + 1,
-        randomRow = Math.floor(Math.random() * (heightInBlocks - 2)) + 1;
-    for (let i = 0; i < snake.segments.length; i++) {
-
-      if (!(snake.segments[i].col === randomCol && snake.segments[i].row === randomRow)) {
-        inSnake = false;
-        this.position = new Block(randomCol, randomRow);
-      }
-    }
-  }
-
-  
+  snake.draw();
+  apple.draw();
 }
 
-////FUNCTIONS////
-function circle (x, y, radius, fillCircle) {
-  ctx.beginPath();
-  ctx.arc(x, y, radius, Math.PI * 2, false);
-
-  if (fillCircle) {
-    ctx.fill();
-  } else {
-    ctx.stroke();
+// Sets adaptability
+function setsSize () {
+  function setsSizeGameplay (size) {
+    gameplay.width  = size;
+    gameplay.height = size;
   }
-};
 
-function drawBorder () {
-  ctx.fillStyle = "Gray";
-  ctx.fillRect(0, 0, width, blockSize);
-  ctx.fillRect(0, height - blockSize, width, blockSize);
-  ctx.fillRect(0, 0, blockSize, height);
-  ctx.fillRect(width - blockSize, 0, blockSize, height); 
-};
+  if (window.innerWidth  >= 400 && window.innerHeight >= 400) {
+    if (window.innerWidth < window.innerHeight) {
+      setsSizeGameplay(window.innerWidth);
+    } else {
+      setsSizeGameplay(window.innerHeight);
+    }
+  } else {
+    setsSizeGameplay(400);
+  }
 
-function drawScore () {
-  ctx.font = "20px Courier";
-  ctx.fillStyle = "Black";
-  ctx.textAlign = "left";
-  ctx.textBaseline = "top";
-  ctx.fillText(`Счет: ${score}`, blockSize, blockSize);
-};
+  if (window.innerWidth >= 800 && window.innerHeight >= 800) {
+    setsSizeGameplay(800);
+  }
 
-function gameOver () {
-  GameOver = true;
-  ctx.font = "60px Courier";
-  ctx.fillStyle = "Black";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.fillText("Конец игры", width / 2, height / 2);
-};
-////FUNCTIONS////
+  size = gameplay.width; // Since it is a square, one can choose the height
+  
+  boxRestartGame.style["margin-top"] = `${size / 1.5}px`;
+  document.body.style ["font-size"]  = `${size / 50}px`;
 
-let snake = new Snake(),
-    apple = new Apple();
+  blockSize      = size / 40;
+  widthInBlocks  = size / blockSize;
+  heightInBlocks = size / blockSize;
+}
+
+setsSize();
+
+window.addEventListener("resize", () => {
+  setsSize();
+  drawingObjects();
+  if (endGame) drawGameOver();
+});
 
 function gameLoop () {
-    ctx.clearRect(0, 0, width, height);
-    drawBorder();
-
+  intervalId = setInterval( () => {
+    gameplayCtx.clearRect(0, 0, size, size);
+    drawingObjects();
     snake.move();
-    snake.draw();
-    apple.draw();
+    
+  }, speed);
+}
 
-    drawScore();
-  if (!GameOver) {
-    setTimeout(gameLoop, animationTime);
+function pauseGame () {
+  pause ? clearInterval(intervalId) : gameLoop();
+  showMenu();
+}
+
+function showMenu () {
+  let menuInGame  = document.querySelector(".menu-buttons"),
+      resumeGame  = document.querySelector(".resume-game"),
+      newGame     = document.querySelector(".new-game"),
+      customizationBtn       = document.querySelector(".customization-btn");
+
+  resumeGame.onclick = () => {
+  	pause = !pause;
+  	pauseGame();
+  };
+
+  newGame.onclick = () => {
+    pause = !pause;
+    pauseGame();
+    createNewGame();
+  };
+
+  customizationBtn.onclick = () => {
+    customization.style.display = "flex";
+    
+    let segment = 0;
+
+    partsOfSnakeAnimation.forEach( (item, id) => {item.style["background-color"] = partsOfSnake[id].style["background-color"]})
+
+    // Shows color number in RGB fields.
+    partsOfSnake.forEach( (i, index) => {
+      i.onclick = () => {
+        partsOfSnake.forEach( (item) => {item.classList.remove("active")}) // Removing the class "active" from all elements
+        i.classList.add("active");
+
+        arrow.style.cssText = `
+          left: ${1.15 + 3.13 * index}em;
+          display: block;
+        `
+        segment = index;
+        let styleArr = i.style["background-color"].slice(4, -1).split(", ");
+
+        ColorPicker(
+          document.getElementById('color-picker'),
+    
+          function(hex, hsv, rgb) {
+              partsOfSnake[segment].style.backgroundColor = hex;
+              partsOfSnakeAnimation[segment].style.backgroundColor = hex;       // #HEX
+              styleArr = i.style["background-color"].slice(4, -1).split(", ");
+              RGBForm.forEach( (item, id) => {
+                item.value = styleArr[id];
+              })
+          });
+
+        RGBForm.forEach( (item, id) => {
+          item.value = styleArr[id];
+        })
+      }
+
+      // To select the first segment.
+      partsOfSnake[segment].click();
+
+      // If changed the value in the field that changes the color of the snake.
+      RGBForm.forEach( (item, id) => {
+        item.oninput = () => {
+          if (+item.value > 255) item.value = "255";
+          if (item.value.length > 3) item.value = item.value.slice(0, 3);
+
+          let changedColor = partsOfSnake[segment].style["background-color"].slice(4, -1).split(", ");
+          changedColor[id] = item.value;
+
+          partsOfSnake[segment].style["background-color"] = `rgb(${changedColor.join(", ")})`;
+          partsOfSnakeAnimation[segment].style["background-color"] = `rgb(${changedColor.join(", ")})`;
+        }
+      })
+    })
+    
+    let apply = document.querySelector(".apply");
+    apply.onclick = () => {
+      partsOfSnake.forEach( (item, id) => {
+        colors[id] = item.style["background-color"];
+      })
+    }
+
+    let back = document.querySelector(".back");
+    back.onclick = () => {
+      closeCustomization();
+    }
   }
-};
+
+  if (pause) {
+    menuInGame.style.display = "block";
+  } else {
+    menuInGame.style.display = "none";
+  }
+}
+
+function closeCustomization () {
+  customization.style.display = "none";
+  partsOfSnake.forEach( (item, id) => {
+    item.style["background-color"] = colors[id];
+  })
+}
+
+function createNewGame () {
+  score = 0;
+  speed = 100;
+  endGame = false;
+  snake = new Snake();
+  apple = new Apple();
+}
+
+function gameOver () {
+  clearInterval(intervalId);
+  endGame = true;
+  gameplayCtx.clearRect(0, 0, size, size);
+  drawingObjects();
+
+  boxRestartGame.style.display = "flex";
+
+  let buttonRestart = document.querySelector(".restart");
+  buttonRestart.onclick = () => {
+    boxRestartGame.style.display = "none";
+    createNewGame();
+    gameLoop();
+  };
+}
+
+function getRandomCoordinate () {
+  return Math.floor(Math.random() * (widthInBlocks - 2)) + 1;
+}
+
+
+let snake, apple, intervalId;
+
+createNewGame();
+drawBackground(gameplayCtx, blockSize, widthInBlocks, heightInBlocks, size);
 gameLoop();
+
 let directions = {
   37: "left",
   38: "up",
@@ -223,7 +222,20 @@ let directions = {
 
 document.body.addEventListener("keydown", (event) => {
   let newDirection = directions[event.keyCode];
-  if (newDirection != undefined) {
+  
+  // Setting of the direction
+  if (newDirection != undefined && !pause) {
     snake.setDirection(newDirection);
+  }
+  
+  // Set pause
+  if (event.keyCode == 27 && !endGame) {
+    if (customization.style.display === "flex" && pause) {
+      closeCustomization();
+    } else {
+      pause = !pause;
+      pauseGame();
+    }
+
   }
 });

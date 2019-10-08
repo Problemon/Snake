@@ -4,25 +4,79 @@
 
 <head>
 	<meta charset="utf-8">
+	<link href="https://fonts.googleapis.com/css?family=Modak|Poppins&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="css/normalize.css">
+	<link rel="stylesheet" href="css/themes.css">
 	<link rel="stylesheet" href="css/style.css">
-	<link href="https://fonts.googleapis.com/css?family=Modak&display=swap" rel="stylesheet">
+	<script src="js/painting.js"></script>
+	<script src="js/objects.js"></script>
+	<script src="js/colorpicker.js"></script>
 	<title>Snake</title>
 </head>
 
 <body>
 	<div class="game">
-		<ul class="menu">
-			<li><button class="resume-game default-button-1">resume game</button></li>
-			<li><button class="new-game default-button-1">new game</button></li>
-			<li><button class="skins default-button-1">choose skin</button></li>
-	  </ul>
-		<canvas class="canvas" width="800" height="800"></canvas>
+		<div class="menu">
+		  <ul class="menu-buttons">
+			  <li><button class="resume-game default-button-1"><span>resume game</span></button></li>
+			  <li><button class="new-game default-button-1"><span>new game</span></button></li>
+			  <li><button class="customization-btn default-button-1"><span>customization</span></button></li>
+	    </ul>
+	    <div class="customization">
+	    	<div class="customization__content">
+	    		<div class="snake">
+			    	<div class="snake__segments">
+			    		<div class="arrow"></div>
+			    		<div class="head segment">
+			    			<div class="eye-1"></div>
+			    			<div class="eye-2"></div>
+			    		</div>
+			    		<div class="body-1 segment"></div>
+			    		<div class="body-2 segment"></div>
+			    	</div>
+			    	<div class="snake__animation">
+			    		<canvas class="animation__background" width="300" height="300"></canvas>
+			    		<div class="snake__segments-animation">
+				    		<div class="head-animation segment-animation">
+				    			<div class="eye-1-animation"></div>
+				    			<div class="eye-2-animation"></div>
+				    		</div>
+				    		<div class="body-1-animation segment-animation"></div>
+				    		<div class="body-2-animation segment-animation"></div>
+			    	  </div>
+			    	</div>
+		      </div>
+		    	<div class="colors">
+		    	  <div id="color-picker" class="cp-default"></div>
+		    	  <div class="RGB">
+			    		<div>
+			    		  <label for="R">R</label>
+			    		  <input type="number" id="R" class="colors-rgb">
+			    	  </div>
+			    		<div>
+			    		  <label for="G">G</label>
+			    		  <input type="number" id="G" class="colors-rgb">
+			    	  </div>
+			    		<div>
+			    		  <label for="B">B</label>
+			    		  <input type="number" id="B" class="colors-rgb">
+			    	  </div>
+		    	  </div>
+		    	</div>
+	      </div>
+	    	<div class="customization-btns">
+	    	  <button class="back default-button-1">back</button>
+	    	  <button class="apply default-button-1">apply</button>
+	      </div>
+	    </div>
+	  </div>
+		<canvas class="gameplay" width="800" height="800"></canvas>
 		<div class="restart-game">
-			<button class="restart default-button-1">Restart</button>
+			<button class="restart default-button-1"><span>restart</span></button>
 		</div>
 	</div>
-	<script src="js/Snake.js"></script>
+	<script src="js/script.js"></script>
+	<script src="js/snake-animation.js"></script>
 </body>
 
 </html>

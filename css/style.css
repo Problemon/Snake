@@ -12,28 +12,236 @@ body {
 	font-size: 16px;
 }
 
-.menu {
-  display: none;
-	position: absolute;
-  
-	text-align: center;
-  list-style: none;
-	padding: 0;
-	top: 15em;
-
-  z-index: 1;
-}
-
-.menu li + li {
-  margin-top: 30px;
-}
-
 .game {
 	display: flex;
 	justify-content: space-around;
 }
 
-.canvas {
+.menu {
+	height: 50em;
+	width: 50em;
+
+	z-index: 1;
+	position: relative;
+}
+
+.menu-buttons {
+  display: none;
+  
+  text-align: center;
+  list-style: none;
+  padding: 0;
+  margin-top: 15em;
+}
+
+.menu-buttons li + li {
+  margin-top: 1.88em;
+}
+
+.customization {
+	display: none;
+  justify-content: space-around;
+  flex-direction: column;
+  
+  padding-bottom: 1.875em;
+  padding-top: 1.875em;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 50em;
+  height: 50em;
+  background-color: #fdfdfd;
+  border: 0.625em solid rgba(0, 0, 0, 0.45);
+}
+
+.customization__content {
+  display: flex;
+  justify-content: space-between;
+  width: 48.75em;
+  padding-left: 2em;
+  padding-right: 2em;
+}
+
+.snake__segments{
+  display: flex;
+  justify-content: center;
+
+  height: 3.13em;
+  max-width: 9.5em;
+
+  position: relative;
+}
+
+.arrow {
+  position: absolute;
+  display: none;
+  left: 0.75em;
+  top: -1.2em;
+
+  transition: all 0.5s;
+
+  width: 1em;
+  height: 1em;
+
+  background-image: url("../images/arrow.png");
+  background-repeat: round;
+
+  transform: rotate(-90deg);
+}
+
+.segment,
+.segment-animation {
+  width: 3.23em;
+  height: 3.23em;
+  border: 1px solid #000;
+  position: relative;
+}
+
+
+.head,
+.head-animation {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
+.eye-1,
+.eye-2,
+.eye-1-animation,
+.eye-2-animation {
+  width: 0.5em;
+  height: 0.5em;
+  background-color: #000;
+}
+
+.body-1:hover[class="body-1 segment"].body-1::after,
+.body-2:hover[class="body-2 segment"].body-2::after,
+.head:hover[class="head segment"].head::after {
+  position: absolute;
+  display: block;
+  content: "";
+
+  width: 1em;
+  height: 1em;
+
+  left: 1.15em;
+  top: -1.2em;
+
+  opacity: 0.3;
+
+  background-image: url("../images/arrow.png");
+  background-repeat: round;
+
+  transform: rotate(-90deg);
+} 
+
+.segment + .segment{
+  border-left: none;
+}
+
+.apple {
+  width: 3.23em;
+  height: 3.23em;
+
+  margin-top: 3em;
+
+  border-radius: 50%;
+
+  background-color: #f00;
+}
+
+.snake__animation {
+  margin-top: 11em;
+
+  position: relative;
+}
+
+.colors {
+  display: flex;
+  flex-direction: column;
+
+  max-height: 260px;
+}
+
+.RGB {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  text-align: center;
+  margin-right: 2.3em;
+  margin-top: 1em;
+
+}
+
+.RGB div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.RGB div:nth-child(1),
+#R {
+  color: rgb(100, 0, 0);
+}
+
+.RGB div:nth-child(2),
+#G {
+  color: rgb(0, 100, 0);
+}
+
+.RGB div:nth-child(3),
+#B {
+  color: rgb(0, 0, 100);
+}
+
+.RGB div + div {
+  margin-left: 1em;
+}
+
+.colors-rgb {
+  width: 3em;
+  text-align: center;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+.snake__segments-animation {
+  display: flex;
+  justify-content: center;
+
+  height: 3.13em;
+  max-width: 9.7em;
+
+  top: 3.2em;
+  left: 6.4em;
+
+  position: absolute;
+}
+
+.customization-btns {
+  display: flex;
+  justify-content: space-around;
+  width: 47.5em;
+  margin-top: auto;
+}
+
+.back {
+	margin-right: auto;
+	margin-left: 25px;
+}
+
+.apply {
+	margin-left: auto;
+	margin-right: 25px;
+}
+
+.gameplay,
+.background {
 	position: absolute;
 	left: 50%;
 	transform: translateX(-50%);
@@ -41,6 +249,9 @@ body {
 
 .restart-game {
   display: none;
+  
+  position: absolute;
+
   justify-content: space-around;
   align-items: flex-end;
 
@@ -57,6 +268,8 @@ body {
   background-color: #dcdcdc;
   border: none;
   border-radius: 10px;
+  
+  transition: all 0.2s;
 
   font-family: "Modak", cursive;
   text-transform: uppercase;
@@ -77,4 +290,9 @@ body {
 	box-shadow: none;
 	background-color: #c2c2c2;
 	color: #454545;
+}
+
+.default-button-1:active span{
+	display: inline-block;
+	transform: scaleY(0.95);
 }
